@@ -1,11 +1,17 @@
 import { useState } from 'react'
 
 const Statistics = (props) => {
+  const all = props.good + props.neutral + props.bad
+  const avg = (props.good - props.bad) / all
+  const positive = (props.good / all) * 100
   return (
     <>
     Good {props.good} <br/>
     Neutral {props.neutral} <br/>
     Bad {props.bad} <br/>
+    All {all} <br/>
+    Average {avg} <br/>
+    Positive {positive}%
     </>
   )
 }
