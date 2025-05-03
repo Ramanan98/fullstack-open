@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 const Statistics = (props) => {
+  // Already coded as separate component
   const all = props.good + props.neutral + props.bad
   const avg = (props.good - props.bad) / all
   const positive = (props.good / all) * 100
