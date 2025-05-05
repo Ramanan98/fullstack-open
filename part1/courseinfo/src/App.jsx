@@ -1,49 +1,62 @@
-import { useState } from 'react'
-
-const Votes = (props) => {
+const Header = (props) => {
   return (
     <>
-    Votes: {props.votes}
+      <h1>{props.course}</h1>
+    </>
+  )
+}
+
+const Content = (props) => {
+  return (
+    <div>
+      <Part part={props.parts[0].name} exercises={props.parts[0].exercises} />
+      <Part part={props.parts[1].name} exercises={props.parts[1].exercises} />
+      <Part part={props.parts[2].name} exercises={props.parts[2].exercises} />
+    </div>
+  )
+}
+
+const Total = (props) => {
+  const total = props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises
+  return (
+    <>
+      <p>Number of exercises {total}</p>
+    </>
+  )
+}
+
+const Part = (props) => {
+  return (
+    <>
+      <p>{props.part} {props.exercises}</p>
     </>
   )
 }
 
 const App = () => {
-  const anecdotes = [
-    'If it hurts, do it more often.',
-    'Adding manpower to a late software project makes it later!',
-    'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-    'Premature optimization is the root of all evil.',
-    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
-    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
-    'The only way to go fast, is to go well.'
-  ]
-  
-  const randomNumber = Math.floor(Math.random() * anecdotes.length);
-  const [selected, setSelected] = useState(randomNumber)
-  const [votes, setVotes] = useState(new Uint8Array(anecdotes.length))
-  const [maxIndex, setMaxIndex] = useState(0)
-
-  // Adds a vote for anecdote of index 'index'
-  const addVote = (index) => {
-    const copy = new Uint8Array(votes)
-    copy[index] += 1
-    setVotes(copy)
-    const max_i = copy.reduce((maxIdx, currentVal, currentIdx, arr) =>
-      currentVal > arr[maxIdx] ? currentIdx : maxIdx
-    , 0);
-    setMaxIndex(max_i)
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7
+      },
+      {
+        name: 'State of a component',
+        exercises: 14
+      }
+    ]
   }
 
   return (
     <div>
-      {anecdotes[selected]}<br/>
-      <Votes votes={votes[selected]}/> <br/>
-      <button onClick={() => addVote(selected)}>Vote</button>
-      <button onClick={()=>setSelected(Math.floor(Math.random() * anecdotes.length))}>Next anecdote</button>
-      <h1>Anecdote with most votes</h1>
-      <p>{anecdotes[maxIndex]}</p>
+      <Header course={course.name} />
+      <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </div>
   )
 }
