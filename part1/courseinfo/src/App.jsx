@@ -1,5 +1,13 @@
 import { useState } from 'react'
 
+const Votes = (props) => {
+  return (
+    <>
+    Votes: {props.votes}
+    </>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -12,12 +20,30 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
   
-  const randomNumber = Math.floor(Math.random() * 8);
+  const randomNumber = Math.floor(Math.random() * anecdotes.length);
   const [selected, setSelected] = useState(randomNumber)
+  const [votes, setVotes] = useState(new Uint8Array(anecdotes.length))
+  const [maxIndex, setMaxIndex] = useState(0)
+
+  // Adds a vote for anecdote of index 'index'
+  const addVote = (index) => {
+    const copy = new Uint8Array(votes)
+    copy[index] += 1
+    setVotes(copy)
+    const max_i = copy.reduce((maxIdx, currentVal, currentIdx, arr) =>
+      currentVal > arr[maxIdx] ? currentIdx : maxIdx
+    , 0);
+    setMaxIndex(max_i)
+  }
 
   return (
     <div>
-      {anecdotes[selected]}
+      {anecdotes[selected]}<br/>
+      <Votes votes={votes[selected]}/> <br/>
+      <button onClick={() => addVote(selected)}>Vote</button>
+      <button onClick={()=>setSelected(Math.floor(Math.random() * anecdotes.length))}>Next anecdote</button>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[maxIndex]}</p>
     </div>
   )
 }
