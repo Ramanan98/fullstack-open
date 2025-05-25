@@ -3,6 +3,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Notification from './components/Notification'
+import Error from './components/Error'
 import personService from './services/persons'
 
 import './index.css'
@@ -16,6 +17,7 @@ const App = () => {
   const [newNumber, setnewNumber] = useState('')
   const [filterTerm, setFilterTerm] = useState('')
   const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const addPerson = (event) => {
     event.preventDefault()
@@ -29,17 +31,23 @@ const App = () => {
     if (nameExists && !newNumberExists) {
       if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
         const id = persons.find(p => p.name === newName)?.id
-        personService.update(id, person).then(response => {
-          setPersons(persons.map(p => p.id !== id ? p : response))
-          setSuccessMessage(`Updated ${newName}`)
-        })
+        personService.update(id, person)
+          .then(response => {
+            setPersons(persons.map(p => p.id !== id ? p : response))
+            setSuccessMessage(`Updated ${newName}`)
+          })
+          .catch(error => {
+            setPersons(persons.filter(p => p.id !== id))
+            setErrorMessage(`Information of ${newName} has already been removed from server`)
+          })
       }
     }
-
-    personService.create(person).then(addedPerson => {
-      setPersons(persons.concat(addedPerson));
-      setSuccessMessage(`Added ${newName}`)
-    })
+    else {
+      personService.create(person).then(addedPerson => {
+        setPersons(persons.concat(addedPerson));
+        setSuccessMessage(`Added ${newName}`)
+      })
+    }
   }
 
   const deletePerson = (id) => {
@@ -65,6 +73,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Error message={errorMessage} />
       <Notification message={successMessage} />
       <Filter value={filterTerm} onChange={handleFilterTermChange} />
       <h3>Add a new</h3>
