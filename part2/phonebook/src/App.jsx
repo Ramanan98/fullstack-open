@@ -9,15 +9,20 @@ import personService from './services/persons'
 import './index.css'
 
 const App = () => {
-  const [persons, setPersons] = useState([])
-  useEffect(() => {
-    personService.getAll().then(persons => { setPersons(persons) })
-  }, [])
+  const [persons, setPersons] = useState(null)
   const [newName, setNewName] = useState('')
   const [newNumber, setnewNumber] = useState('')
   const [filterTerm, setFilterTerm] = useState('')
   const [successMessage, setSuccessMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
+
+  useEffect(() => {
+    personService.getAll().then(persons => { setPersons(persons) })
+  }, [])
+
+  if (!persons) {
+    return null
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
