@@ -14,7 +14,7 @@ const CountryInfo = (props) => {
                     <li key={lang}>{lang}</li>
                 ))}
             </ul>
-            <img src={data.flag_url} />
+            <div><img src={data.flag_url} /></div> ̰
         </>
     )
 }
