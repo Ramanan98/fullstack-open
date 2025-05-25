@@ -22,6 +22,14 @@ const App = () => {
     return null
   }
 
+  const setCountryView = (name) => {
+    axios.get(`https://studies.cs.helsinki.fi/restcountries/api/name/${name}`)
+      .then(response => {
+        const data = response.data
+        setCountryData({ 'name': data.name.common, 'capital': data.capital[0], 'area': data.area, 'languages': data.languages, 'flag_url': data.flags.png })
+      })
+  }
+
   const search = (term) => {
     if (!term) {
       setCountries([])
@@ -61,11 +69,11 @@ const App = () => {
     <div>
       Find countries: <input value={searchTerm} onChange={handleChange} /> <br />
       {message}
-      <Countries data={countries} />
+      <Countries data={countries} showAction={setCountryView}/>
       {/* <pre>
         {JSON.stringify(countries, null, 2)}
       </pre> */}
-      <CountryInfo data={countryData} />
+      <CountryInfo data={countryData}/>
     </div>
   )
 }
