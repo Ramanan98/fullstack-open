@@ -6,8 +6,8 @@ import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  useEffect(()=> {
-    personService.getAll().then(persons => {setPersons(persons)})
+  useEffect(() => {
+    personService.getAll().then(persons => { setPersons(persons) })
   }, [])
   const [newName, setNewName] = useState('')
   const [newNumber, setnewNumber] = useState('')
@@ -19,7 +19,16 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    personService.create(person).then(addedPerson => {setPersons(persons.concat(addedPerson))})
+    personService.create(person).then(addedPerson => { setPersons(persons.concat(addedPerson)) })
+  }
+
+  const deletePerson = (id) => {
+    if (window.confirm(`Delete ${persons.find(p => p.id === id)?.name}?`)) {
+      console.log('calling deletePerson with id', id)
+      personService.del(id).then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+    }
   }
 
   const handleNameChange = (event) => {
@@ -49,7 +58,7 @@ const App = () => {
       <h3>Add a new</h3>
       <PersonForm nameValue={newName} nameChange={handleNameChange} numberValue={newNumber} numberChange={handleNumberChange} onSubmit={addPerson} />
       <h2>Numbers</h2>
-      <Persons data={persons} filter={filterTerm} />
+      <Persons data={persons} filter={filterTerm} deleteAction={deletePerson} />
     </div>
   )
 }
