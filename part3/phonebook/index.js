@@ -58,6 +58,10 @@ app.post('/api/persons', (request, response) => {
   if (!name || !number) {
     return response.status(400).json({ error: 'Name or number is missing' });
   }
+  const nameExists = persons.some(person => person.name === name);
+  if (nameExists) {
+    return response.status(409).json({ error: 'Name must be unique' });
+  }
   const id = Math.floor(Math.random() * 100);
   const person = { id, name, number };
   persons = persons.concat(person);
