@@ -53,6 +53,18 @@ app.delete('/api/persons/:id', (request, response) => {
   }
 })
 
+app.post('/api/persons', (request, response) => {
+  const { name, number } = request.body;
+  if (!name || !number) {
+    return response.status(400).json({ error: 'Name or number is missing' });
+  }
+  const id = Math.floor(Math.random() * 100);
+  const person = { id, name, number };
+  persons = persons.concat(person);
+  response.status(201).json(person); // 201 Created
+});
+
+
 app.get('/api/info', (request, response) => {
   const now = new Date();
   const response_string = `Phonebook has info for ${persons.length} people\n${now}`;
