@@ -37,6 +37,7 @@ app.get('/api/persons/:id', (request, response) => {
   })
 })
 
+// Saving to database
 app.post('/api/persons', (request, response) => {
   const body = request.body
   console.log(body.name)
