@@ -73,6 +73,7 @@ app.delete('/api/persons/:id', (request, response) => {
     .catch(error => next(error))
 })
 
+// Uses database
 app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
   console.log(request.body)
