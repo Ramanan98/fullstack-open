@@ -31,7 +31,7 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id).then((person) => {
     if (person) {
       response.json(person)
@@ -73,12 +73,28 @@ app.delete('/api/persons/:id', (request, response) => {
     .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const { name, number } = request.body
+  console.log(request.body)
+
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name, number }
+  )
+    .then(updatedPerson => {
+      if (!updatedPerson) {
+        return response.status(404).json({ error: 'person not found' })
+      }
+      return response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
-
 
 // Moved error handling to middleware
 const errorHandler = (error, request, response, next) => {
