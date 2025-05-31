@@ -43,7 +43,8 @@ const App = () => {
           })
           .catch(error => {
             setPersons(persons.filter(p => p.id !== id))
-            setErrorMessage(`Information of ${newName} has already been removed from server`)
+            setErrorMessage(`Information of ${newName} has already been removed from server. ${error.response.data.error}`)
+            console.log(error.response.data.error)
           })
       }
     }
@@ -51,6 +52,10 @@ const App = () => {
       personService.create(person).then(addedPerson => {
         setPersons(persons.concat(addedPerson));
         setSuccessMessage(`Added ${newName}`)
+      })
+      .catch(error => {
+        setErrorMessage(error.response.data.error)
+        console.log(error.response.data.error)
       })
     }
   }
