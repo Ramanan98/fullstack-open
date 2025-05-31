@@ -85,7 +85,7 @@ describe('total likes', () => {
 
 })
 
-describe('most likes', () => {
+describe('favorite blog', () => {
 
     test('when list has only one blog, return the only blog', () => {
         const result = listHelper.favoriteBlog(listWithOneBlog)
@@ -99,6 +99,34 @@ describe('most likes', () => {
 
     test('when list is empty, return null', () => {
         const result = listHelper.favoriteBlog(emptyList)
+        assert.deepStrictEqual(result, null)
+    })
+})
+
+describe('most likes', () => {
+
+    const correct = {
+        author: "Edsger W. Dijkstra",
+        likes: 17
+    }
+
+    const oneListCorrect = {
+        author: listWithOneBlog[0].author,
+        likes: listWithOneBlog[0].likes
+    }
+
+    test('when list has only one blog, return the only author', () => {
+        const result = listHelper.mostLikes(listWithOneBlog)
+        assert.deepStrictEqual(result, oneListCorrect)
+    })
+
+    test('when list has many blogs, return the correct value', () => {
+        const result = listHelper.mostLikes(blogs)
+        assert.deepStrictEqual(result, correct)
+    })
+
+    test('when list is empty, return null', () => {
+        const result = listHelper.mostLikes(emptyList)
         assert.deepStrictEqual(result, null)
     })
 })
