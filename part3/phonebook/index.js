@@ -5,8 +5,6 @@ const Person = require('./models/person')
 
 const app = express()
 
-let persons = []
-
 const requestLogger = (request, response, next) => {
   console.log('Method:', request.method)
   console.log('Path:  ', request.path)
@@ -60,12 +58,12 @@ app.post('/api/persons', (request, response, next) => {
   person.save().then((savedPerson) => {
     response.json(savedPerson)
   })
-  .catch(error => {
-    next(error)
-  })
+    .catch(error => {
+      next(error)
+    })
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then(deletedPerson => {
       if (!deletedPerson) {
