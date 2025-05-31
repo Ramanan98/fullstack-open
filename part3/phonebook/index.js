@@ -79,6 +79,8 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
+
+// Moved error handling to middleware
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
   if (error.name === 'CastError') {
