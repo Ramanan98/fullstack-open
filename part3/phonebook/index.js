@@ -1,97 +1,82 @@
+require('dotenv').config()
 const cors = require('cors')
 const express = require('express')
-const morgan = require('morgan')
+const Person = require('./models/person')
+
 const app = express()
 
-let persons = [
-  {
-    "id": "1",
-    "name": "Arto Hellas",
-    "number": "040-123456"
-  },
-  {
-    "id": "2",
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523"
-  },
-  {
-    "id": "3",
-    "name": "Dan Abramov",
-    "number": "12-43-234345"
-  },
-  {
-    "id": "4",
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122"
-  }
-]
+let persons = []
 
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('headers:  ', request.headers)
+  console.log('---')
+  next()
+}
+
+app.use(requestLogger)
+app.use(express.static('dist'))
+app.use(express.json())
 app.use(cors())
 
-app.use(express.json())
-
-app.use(express.static('dist'))
-
-morgan.token('body', req => {
-  return JSON.stringify(req.body)
+app.get('/', (request, response) => {
+  response.send('<h1>Hello World!</h1>')
 })
-
-morgan.token('body', req => {
-  return JSON.stringify(req.body)
-})
-
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then((persons) => {
+    response.json(persons)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const person = persons.find(person => person.id == id)
-  if (person) {
+  Person.findById(request.params.id).then((person) => {
     response.json(person)
-  }
-  else {
-    response.status(404).end()
-  }
-})
-
-app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const person = persons.find(person => person.id == id)
-  if (person) {
-    persons = persons.filter(person => person.id !== id);
-    response.status(204).end()
-  }
-  else {
-    response.status(404).end()
-  }
+  })
 })
 
 app.post('/api/persons', (request, response) => {
-  const { name, number } = request.body;
-  if (!name || !number) {
-    return response.status(400).json({ error: 'Name or number is missing' });
-  }
-  const nameExists = persons.some(person => person.name === name);
-  if (nameExists) {
-    return response.status(409).json({ error: 'Name must be unique' });
-  }
-  const id = Math.floor(Math.random() * 100);
-  const person = { id, name, number };
-  persons = persons.concat(person);
-  response.status(201).json(person); // 201 Created
-});
+  const body = request.body
+  console.log(body.name)
+  console.log(body.number)
 
+  if (!body.name || !body.number) {
+    return response.status(400).json({ error: 'name or number missing' })
+  }
 
-app.get('/api/info', (request, response) => {
-  const now = new Date();
-  const response_string = `Phonebook has info for ${persons.length} people\n${now}`;
-  response.type('text/plain').send(response_string);
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  })
+
+  person.save().then((savedPerson) => {
+    response.json(savedPerson)
+  })
 })
 
-const PORT = process.env.PORT || 3001
+app.delete('/api/persons/:id', (request, response) => {
+  Person.findByIdAndDelete(request.params.id)
+    .then(deletedPerson => {
+      if (!deletedPerson) {
+        return response.status(404).json({ error: 'person not found' })
+      }
+      response.status(204).end()
+    })
+    .catch(error => {
+      console.error('Error deleting person:', error.message)
+      response.status(500).json({ error: 'failed to delete person' })
+    })
+})
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
