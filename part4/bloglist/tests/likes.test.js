@@ -94,11 +94,39 @@ describe('most likes', () => {
 
     test('when list has many blogs, return the correct value', () => {
         const result = listHelper.favoriteBlog(blogs)
-        assert.strictEqual(result, blogs[2])
+        assert.deepStrictEqual(result, blogs[2])
     })
 
     test('when list is empty, return null', () => {
         const result = listHelper.favoriteBlog(emptyList)
-        assert.strictEqual(result, null)
+        assert.deepStrictEqual(result, null)
+    })
+})
+
+describe('most blogs', () => {
+
+    const correct = {
+        author: "Robert C. Martin",
+        blogs: 3
+    }
+
+    const oneListCorrect = {
+        author: listWithOneBlog[0].author,
+        blogs: listWithOneBlog.length
+    }
+
+    test('when list has only one blog, return the only author', () => {
+        const result = listHelper.mostBlogs(listWithOneBlog)
+        assert.deepStrictEqual(result, oneListCorrect)
+    })
+
+    test('when list has many blogs, return the correct value', () => {
+        const result = listHelper.mostBlogs(blogs)
+        assert.deepStrictEqual(result, correct)
+    })
+
+    test('when list is empty, return null', () => {
+        const result = listHelper.mostBlogs(emptyList)
+        assert.deepStrictEqual(result, null)
     })
 })
