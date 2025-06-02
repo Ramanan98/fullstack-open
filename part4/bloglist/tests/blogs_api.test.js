@@ -13,26 +13,56 @@ beforeEach(async () => {
   await Blog.insertMany(helper.initialBlogs)
 })
 
-test.only('blogs are returned as json', async () => {
+test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
 })
 
-test.only('all blogs are returned', async () => {
+test('all blogs are returned', async () => {
   const response = await api.get('/api/blogs')
 
   assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
-test.only('unique identifier property of blog posts is named id', async () => {
+test('unique identifier property of blog posts is named id', async () => {
   const response = await api.get('/api/blogs')
   const blogs = response.body
   blogs.forEach(blog => {
     assert.ok(blog.id)
     assert.strictEqual(blog._id, undefined)
   })
+})
+
+test.only('a valid blog can be added ', async () => {
+  const newBlog = {
+    title: "Introduction to MongoDB",
+    author: "Carlos Ruiz",
+    url: "https://example.com/mongodb-intro",
+    likes: 45
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+  const titles = blogsAtEnd.map((n) => n.title)
+  assert(titles.includes(newBlog.title))
+
+  const authors = blogsAtEnd.map((n) => n.author)
+  assert(authors.includes(newBlog.author))
+
+  const urls = blogsAtEnd.map((n) => n.url)
+  assert(urls.includes(newBlog.url))
+
+  const likes = blogsAtEnd.map((n) => n.likes)
+  assert(likes.includes(newBlog.likes))
 })
 
 after(async () => {
