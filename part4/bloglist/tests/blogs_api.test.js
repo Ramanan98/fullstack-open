@@ -65,7 +65,7 @@ test('a valid blog can be added ', async () => {
   assert(likes.includes(newBlog.likes))
 })
 
-test.only('default 0 if likes missing', async () => {
+test('default 0 if likes missing', async () => {
   const newBlogWithoutLikes = {
     title: "Deploying Apps with Docker",
     author: "Aisha Khan",
@@ -87,6 +87,30 @@ test.only('default 0 if likes missing', async () => {
   )
 
   assert.strictEqual(found.likes, 0)
+})
+
+test('send 400 code if title or url missing', async () => {
+  const blogWithoutTitle = {
+    author: "Bob Johnson",
+    url: "http://example.com/no-title",
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(blogWithoutTitle)
+    .expect(400)
+
+  const blogWithoutUrl = {
+    title: "Missing URL Blog",
+    author: "Charlie Lee",
+    likes: 8
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(blogWithoutUrl)
+    .expect(400)
 })
 
 after(async () => {
