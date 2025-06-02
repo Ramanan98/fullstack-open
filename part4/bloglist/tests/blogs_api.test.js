@@ -35,7 +35,7 @@ test('unique identifier property of blog posts is named id', async () => {
   })
 })
 
-test.only('a valid blog can be added ', async () => {
+test('a valid blog can be added ', async () => {
   const newBlog = {
     title: "Introduction to MongoDB",
     author: "Carlos Ruiz",
@@ -63,6 +63,30 @@ test.only('a valid blog can be added ', async () => {
 
   const likes = blogsAtEnd.map((n) => n.likes)
   assert(likes.includes(newBlog.likes))
+})
+
+test.only('default 0 if likes missing', async () => {
+  const newBlogWithoutLikes = {
+    title: "Deploying Apps with Docker",
+    author: "Aisha Khan",
+    url: "https://example.com/docker-deploy"
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutLikes)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  const found = blogsAtEnd.find(blog =>
+    blog.title === newBlogWithoutLikes.title &&
+    blog.author === newBlogWithoutLikes.author &&
+    blog.url === newBlogWithoutLikes.url
+  )
+
+  assert.strictEqual(found.likes, 0)
 })
 
 after(async () => {
