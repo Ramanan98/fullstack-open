@@ -10,15 +10,29 @@ blogsRouter.post('/', async (request, response, next) => {
     const body = request.body;
 
     if (!body.title || !body.url) {
-        return response.status(400).end();
+        return response.status(400).end()
     }
 
     try {
         const blog = new Blog(body);
-        const savedBlog = await blog.save();
-        response.status(201).json(savedBlog);
+        const savedBlog = await blog.save()
+        response.status(201).json(savedBlog)
     } catch (error) {
-        next(error);
+        next(error)
+    }
+});
+
+blogsRouter.delete('/:id', async (request, response, next) => {
+    const id = request.params.id;
+    
+    try {
+        const deletedBlog = await Blog.findByIdAndDelete(id)
+        if(!deletedBlog) {
+            return response.status(404).json({ error: 'blog not found' })
+        }
+        response.status(204).end()
+    } catch (error) {
+        next(error)
     }
 });
 
