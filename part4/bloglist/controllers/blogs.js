@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const { userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response, next) => {
     const blogs = await Blog.find({}).populate('user', {
@@ -11,16 +12,10 @@ blogsRouter.get('/', async (request, response, next) => {
     response.json(blogs)
 })
 
-blogsRouter.post('/', async (request, response, next) => {
+blogsRouter.post('/', userExtractor, async (request, response, next) => {
     const body = request.body
 
-    // Only possible with valid token
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'token invalid' })
-    }
-
-    const user = await User.findById(decodedToken.id)
+    const user = request.user
 
     const blog = new Blog({
         title: body.title,
@@ -37,18 +32,14 @@ blogsRouter.post('/', async (request, response, next) => {
     response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response, next) => {
+blogsRouter.delete('/:id', userExtractor, async (request, response, next) => {
     const id = request.params.id
-
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'token invalid' })
-    }
+    const user = request.user
 
     try {
         const blogToDelete = await Blog.findById(id)
 
-        if (blogToDelete.user.toString() !== decodedToken.id) {
+        if (blogToDelete.user.toString() !== user._id) {
             return response.status(403).json({ error: 'action not allowed' });
         }
 
