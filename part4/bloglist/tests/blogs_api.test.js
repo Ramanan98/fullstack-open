@@ -13,9 +13,23 @@ const helper = require('./test_helper');
 
 const api = supertest(app)
 
+let token;
+
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
+
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User({ username: 'root', passwordHash })
+  await user.save()
+
+  const loginResponse = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'sekret' })
+    .expect(200)
+
+  token = loginResponse.body.token
 })
 
 test('blogs are returned as json', async () => {
@@ -40,7 +54,7 @@ test('unique identifier property of blog posts is named id', async () => {
   })
 })
 
-test('a valid blog can be added ', async () => {
+test('a valid blog can be added with valid token', async () => {
   const newBlog = {
     title: "Introduction to MongoDB",
     author: "Carlos Ruiz",
@@ -50,6 +64,7 @@ test('a valid blog can be added ', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -70,6 +85,24 @@ test('a valid blog can be added ', async () => {
   assert(likes.includes(newBlog.likes))
 })
 
+test('adding a blog fails with status code 401 if token is not provided', async () => {
+  const newBlog = {
+    title: "Introduction to MongoDB",
+    author: "Carlos Ruiz",
+    url: "https://example.com/mongodb-intro",
+    likes: 45
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(401)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
 test('default 0 if likes missing', async () => {
   const newBlogWithoutLikes = {
     title: "Deploying Apps with Docker",
@@ -79,6 +112,7 @@ test('default 0 if likes missing', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(newBlogWithoutLikes)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -103,6 +137,7 @@ test('send 400 code if title or url missing', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(blogWithoutTitle)
     .expect(400)
 
@@ -114,6 +149,7 @@ test('send 400 code if title or url missing', async () => {
 
   await api
     .post('/api/blogs')
+    .set('Authorization', `Bearer ${token}`)
     .send(blogWithoutUrl)
     .expect(400)
 })
@@ -123,7 +159,10 @@ describe('deletion of a blog', () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
 
@@ -136,8 +175,10 @@ describe('deletion of a blog', () => {
   test('fails with status code 400 if id is valid', async () => {
     const invalidId = '5a3d5da59070081a82a3445'
 
-    await api.delete(`/api/blogs/${invalidId}`).expect(400)
-
+    await api
+      .delete(`/api/blogs/${invalidId}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400)
   })
 })
 

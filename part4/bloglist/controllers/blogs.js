@@ -15,6 +15,10 @@ blogsRouter.get('/', async (request, response, next) => {
 blogsRouter.post('/', userExtractor, async (request, response, next) => {
     const body = request.body
 
+    if (!body.title || !body.url) {
+        return response.status(400).json({ error: 'title or url missing' })
+    }
+
     const user = request.user
 
     const blog = new Blog({
