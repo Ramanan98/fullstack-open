@@ -8,7 +8,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [newBlog, setNewBlog] = useState({})
   const [showAll, setShowAll] = useState(true)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notifyMessage, setNotifyMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -43,6 +43,10 @@ const App = () => {
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
         setNewBlog('')
+        setNotifyMessage(`${newBlog.title} by ${newBlog.author} added`)
+        setTimeout(() => {
+          setNotifyMessage(null)
+        }, 5000)
       })
   }
 
@@ -69,9 +73,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setNotifyMessage('wrong credentials')
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotifyMessage(null)
       }, 5000)
     }
   }
@@ -111,17 +115,17 @@ const App = () => {
         name="title"
         value={newBlog.title || ''}
         onChange={handleBlogChange}
-      /><br/>
+      /><br />
       Author<input
         name="author"
         value={newBlog.author || ''}
         onChange={handleBlogChange}
-      /><br/>
+      /><br />
       URL<input
         name="url"
         value={newBlog.url || ''}
         onChange={handleBlogChange}
-      /><br/>
+      /><br />
       <button type="submit">Create</button>
     </form>
   )
@@ -129,7 +133,7 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={errorMessage} />
+      <Notification message={notifyMessage} />
 
       {!user && loginForm()}
 
