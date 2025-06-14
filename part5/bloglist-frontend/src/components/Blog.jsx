@@ -21,12 +21,14 @@ const Blog = ({ blog, auth, onDelete }) => {
   }
 
   const removeBlog = async () => {
-    try {
-      await blogService.deleteBlog(blog.id)
-      onDelete(blog.id)
-    }
-    catch (error) {
-      console.error(error)
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      try {
+        await blogService.deleteBlog(blog.id)
+        onDelete(blog.id)
+      }
+      catch (error) {
+        console.error(error)
+      }
     }
   }
 
