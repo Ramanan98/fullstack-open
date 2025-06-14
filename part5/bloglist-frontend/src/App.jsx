@@ -118,11 +118,9 @@ const App = () => {
 
       {user && (
         <>
-          <Togglable buttonLabel='View' ref={blogRef}>
-            {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} />
-            )}
-          </Togglable>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
         </>
       )}
     </div>
