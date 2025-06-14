@@ -8,14 +8,12 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newBlog, setNewBlog] = useState({})
   const [notifyMessage, setNotifyMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
-  const blogRef = useRef()
 
   useEffect(() => {
     // Using local storage
@@ -28,10 +26,11 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, [])
+    blogService.getAll().then(blogs => {
+      setBlogs(blogs);
+      blogs.forEach(blog => console.log(blog));
+    });
+  }, []);
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
