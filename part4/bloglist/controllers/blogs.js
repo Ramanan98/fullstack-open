@@ -43,7 +43,7 @@ blogsRouter.delete('/:id', userExtractor, async (request, response, next) => {
     try {
         const blogToDelete = await Blog.findById(id)
 
-        if (blogToDelete.user.toString() !== user._id) {
+        if (blogToDelete.user.toString() !== user._id.toString()) {
             return response.status(403).json({ error: 'action not allowed' });
         }
 

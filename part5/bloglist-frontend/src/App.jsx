@@ -27,10 +27,9 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
-      setBlogs(blogs);
-      blogs.forEach(blog => console.log(blog));
-    });
-  }, []);
+      setBlogs(blogs)
+    })
+  }, [])
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
@@ -71,6 +70,10 @@ const App = () => {
   const handleLogout = (event) => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+  }
+
+  const handleDeleteBlog = (id) => {
+    setBlogs(blogs.filter(blog => blog.id !== id))
   }
 
   const loginForm = () => (
@@ -120,7 +123,12 @@ const App = () => {
           {[...blogs]
             .sort((a, b) => b.likes - a.likes)
             .map(blog => (
-              <Blog key={blog.id} blog={blog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                auth={user.username === blog.user?.username}
+                onDelete={handleDeleteBlog}
+              />
             ))}
         </>
       )}
