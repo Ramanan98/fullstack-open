@@ -13,9 +13,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [blogFormVisible, setBlogFormVisible] = useState(false)
 
   const blogFormRef = useRef()
+  const blogRef = useRef()
 
   useEffect(() => {
     // Using local storage
@@ -35,7 +35,7 @@ const App = () => {
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
-    
+
     blogService
       .create(blogObject)
       .then(returnedBlog => {
@@ -45,14 +45,6 @@ const App = () => {
           setNotifyMessage(null)
         }, 5000)
       })
-  }
-
-  const handleBlogChange = (event) => {
-    const { name, value } = event.target
-    setNewBlog({
-      ...newBlog,
-      [name]: value
-    })
   }
 
   const handleLogin = async (event) => {
@@ -126,9 +118,11 @@ const App = () => {
 
       {user && (
         <>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
+          <Togglable buttonLabel='View' ref={blogRef}>
+            {blogs.map(blog =>
+              <Blog key={blog.id} blog={blog} />
+            )}
+          </Togglable>
         </>
       )}
     </div>
