@@ -12,6 +12,7 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
+    // Using local storage
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -48,6 +49,11 @@ const App = () => {
     }
   }
 
+  const handleLogout = (event) => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -79,8 +85,14 @@ const App = () => {
 
       {!user && loginForm()}
 
-      {user && blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {user && (
+        <>
+          <div>{user.username} logged in</div>
+          <button onClick={handleLogout}>Log out</button>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+        </>
       )}
     </div>
   )
