@@ -38,7 +38,7 @@ const Blog = ({ blog, auth, onDelete }) => {
 
   return (
     <div style={blogStyle}>
-      <div>
+      <div className='titleAuthor'>
         {blog.title} by {blog.author}
         <button onClick={toggleVisibility}>
           {visible ? 'hide' : 'view'}
@@ -46,8 +46,8 @@ const Blog = ({ blog, auth, onDelete }) => {
       </div>
       {visible && (
         <div>
-          <div>{blog.url}</div>
-          <div>
+          <div className='url'>{blog.url}</div>
+          <div className='likes'>
             likes {likes}
             <button onClick={addLike}>
               Like
