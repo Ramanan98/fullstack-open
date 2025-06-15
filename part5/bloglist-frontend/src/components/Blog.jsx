@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, auth, onDelete }) => {
+const Blog = ({ blog, auth, onDelete, addLike }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -13,12 +13,12 @@ const Blog = ({ blog, auth, onDelete }) => {
   const [visible, setVisible] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
-  const addLike = async () => {
-    const updatedBlog = await blogService.update(blog.id, {
-      likes: likes + 1,
-    })
-    setLikes(updatedBlog.likes)
-  }
+  // const addLike = async () => {
+  //   const updatedBlog = await blogService.update(blog.id, {
+  //     likes: likes + 1,
+  //   })
+  //   setLikes(updatedBlog.likes)
+  // }
 
   const removeBlog = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
