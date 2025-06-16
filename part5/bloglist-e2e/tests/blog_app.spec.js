@@ -80,7 +80,7 @@ describe('Blog app', () => {
 
       const removeButton = page.getByRole('button', { name: 'Remove' })
       await removeButton.click()
-      
+
       await expect(page.locator('.titleAuthor')).not.toBeVisible()
     })
 
@@ -97,5 +97,43 @@ describe('Blog app', () => {
       const removeButton = page.getByRole('button', { name: 'Remove' })
       await expect(removeButton).not.toBeVisible()
     })
+
+    test('blogs are ordered by likes in descending order', async ({ page }) => {
+      await createBlog(page, "First blog", "Author 1", "https://test1.com")
+      await createBlog(page, "Second blog", "Author 2", "https://test2.com")
+      await createBlog(page, "Third blog", "Author 3", "https://test3.com")
+
+      // Liking the first blog twice
+      const viewButton = page.getByRole('button', { name: 'view' }).first()
+      await viewButton.click()
+      let likeButton = page.getByRole('button', { name: 'Like' }).first()
+      for (let i = 0; i < 2; i++) {
+        await likeButton.click()
+      }
+      await page.getByRole('button', { name: 'hide' }).first().click()
+
+      // Liking the second blog 5 times
+      const viewButtons = await page.getByRole('button', { name: 'view' }).all()
+      const secondViewButton = viewButtons[1]
+      await secondViewButton.click()
+      likeButton = page.getByRole('button', { name: 'Like' }).first()
+      for (let i = 0; i < 5; i++) {
+        await likeButton.click()
+      }
+      await page.getByRole('button', { name: 'hide' }).first().click()
+
+      // No likes for third blog
+      // Reload page
+      await page.reload()
+
+      await page.locator('.titleAuthor').first().waitFor()
+
+      const blogTitles = await page.locator('.titleAuthor').allTextContents()
+
+      expect(blogTitles[0]).toContain('Second blog')
+      expect(blogTitles[1]).toContain('First blog')
+      expect(blogTitles[2]).toContain('Third blog')
+    })
+
   })
 })
