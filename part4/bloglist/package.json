@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch index.js",
-    "test": "node --test",
-    "lint": "eslint ."
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test node --test",
+    "lint": "eslint .",
+    "start:test": "NODE_ENV=test node index.js"
   },
   "author": "ramanan",
   "license": "ISC",

@@ -77,7 +77,7 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleLogin} data-testid='loginForm'>
       <div>
         username
         <input
