@@ -26,10 +26,12 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs => {
-      setBlogs(blogs)
-    })
-  }, [])
+    if (user) {
+      blogService.getAll().then(blogs => {
+        setBlogs(blogs)
+      })
+    }
+  }, [user])
 
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
@@ -76,8 +78,17 @@ const App = () => {
     setUser(null)
   }
 
-  const handleDeleteBlog = (id) => {
-    setBlogs(blogs.filter(blog => blog.id !== id))
+  const handleDeleteBlog = async (id) => {
+    try {
+      await blogService.deleteBlog(id)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+    } catch (error) {
+      console.error('Error deleting blog:', error)
+      setNotifyMessage('Error deleting blog')
+      setTimeout(() => {
+        setNotifyMessage(null)
+      }, 5000)
+    }
   }
 
   const loginForm = () => (
@@ -142,4 +153,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App 
