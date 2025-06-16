@@ -38,4 +38,23 @@ describe('Blog app', () => {
     })
   })
 
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'testuser', 'testpassword')
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'New blog' }).click()
+      
+      await page.getByTestId('title').fill('Test Blog Title')
+      await page.getByTestId('author').fill('Test Author')
+      await page.getByTestId('url').fill('https://www.test.com')
+      
+      await page.getByRole('button', { name: 'Create' }).click()
+      
+      await page.getByText('Test Blog Title by Test Author added').waitFor()
+
+      await expect(page.locator('.titleAuthor')).toContainText('Test Blog Title by Test Author')
+    })
+  })
 })
