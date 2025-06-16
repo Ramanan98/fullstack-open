@@ -3,8 +3,8 @@ h1 {
   font-style: italic;
 }
 
-.note {
-  color: grey;
-  padding-top: 3px;
+.error {
+  border-style: solid;
+  color: rgb(255, 0, 0);
   font-size: 15px;
 }
