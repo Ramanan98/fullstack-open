@@ -41,6 +41,7 @@ const anecdoteReducer = (state = initialState, action) => {
   }
 }
 
+// Action creators
 export const addVoteTo = (id) => {
   return {
     type: 'VOTE',
