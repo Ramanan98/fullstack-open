@@ -47,7 +47,7 @@ export const voteForAnecdote = (id) => {
   return async (dispatch) => {
     const anecdote = await anecdoteService.vote(id)
     dispatch(addVoteTo(id))
-    dispatch(showNotification(`you voted for '${anecdote.content}'`))
+    dispatch(showNotification(`you voted for '${anecdote.content}'`, 5))
   }
 }
 
