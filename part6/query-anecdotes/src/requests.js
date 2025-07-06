@@ -3,7 +3,9 @@ import axios from 'axios'
 const baseUrl = 'http://localhost:3001/anecdotes'
 
 export const getAnecdotes = () =>
-  axios.get(baseUrl).then(res => res.data)
+  axios.get(baseUrl).then(res =>
+    res.data.sort((a, b) => b.votes - a.votes)
+  )
 
 export const createAnecdote = newAnecdote =>
   axios.post(baseUrl, newAnecdote).then(res => res.data)
