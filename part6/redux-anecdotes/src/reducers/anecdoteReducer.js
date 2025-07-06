@@ -1,21 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
-  }
-}
-
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
   initialState: [],
   reducers: {
     createAnecdote(state, action) {
-      return [...state, asObject(action.payload)].sort((a, b) => b.votes - a.votes)
+      return [...state, action.payload].sort((a, b) => b.votes - a.votes)
     },
     addVoteTo(state, action) {
       const id = action.payload
@@ -32,9 +22,12 @@ const anecdoteSlice = createSlice({
     },
     setAnecdotes(state, action) {
       return action.payload
+    },
+    appendAnecdote(state, action) {
+      state.push(action.payload)
     }
   }
 })
 
-export const { createAnecdote, addVoteTo, setAnecdotes } = anecdoteSlice.actions
+export const { createAnecdote, addVoteTo, setAnecdotes, appendAnecdote } = anecdoteSlice.actions
 export default anecdoteSlice.reducer

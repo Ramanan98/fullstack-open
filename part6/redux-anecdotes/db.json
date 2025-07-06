@@ -1,5 +1,5 @@
 {
-  "anecdotes":[
+  "anecdotes": [
     {
       "content": "If it hurts, do it more often",
       "id": "47145",
@@ -28,6 +28,21 @@
     {
       "content": "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
       "id": "98312",
+      "votes": 0
+    },
+    {
+      "id": "739f",
+      "content": "There is nothing quite so useless as doing with great efficiency something that should not be done at all.",
+      "votes": 0
+    },
+    {
+      "id": "32e0",
+      "content": "Walking on water and developing software from a specification are easy if both are frozen.",
+      "votes": 0
+    },
+    {
+      "id": "55d9",
+      "content": "Programs must be written for people to read, and only incidentally for machines to execute.",
       "votes": 0
     }
   ]
