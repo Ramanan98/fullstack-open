@@ -26,6 +26,7 @@ const App = () => {
     newAnecdoteMutation.mutate({ content, votes: 0 })
   }
 
+  // Using react query
   const handleVote = (anecdote) => {
     updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 })
     console.log('vote')
