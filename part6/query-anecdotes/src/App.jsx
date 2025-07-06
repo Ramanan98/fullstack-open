@@ -7,9 +7,8 @@ const App = () => {
   const queryClient = useQueryClient()
   const newAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
-    onSuccess: (newAnecdote) => {
-      const anecdotes = queryClient.getQueryData({ queryKey: ['anecdotes'] })
-      queryClient.setQueryData({ queryKey: ['anecdotes'] }, anecdotes.concat(newAnecdote))
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
     }
   })
 
@@ -20,12 +19,12 @@ const App = () => {
     },
   })
 
-  // const addAnecdote = async (event) => {
-  //   event.preventDefault()
-  //   const content = event.target.anecdote.value
-  //   event.target.anecdote.value = ''
-  //   newAnecdoteMutation.mutate({ content, votes: 0 })
-  // }
+  const addAnecdote = async (event) => {
+    event.preventDefault()
+    const content = event.target.anecdote.value
+    event.target.anecdote.value = ''
+    newAnecdoteMutation.mutate({ content, votes: 0 })
+  }
 
   const handleVote = (anecdote) => {
     updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 })
@@ -54,7 +53,7 @@ const App = () => {
       <h3>Anecdote app</h3>
 
       <Notification />
-      <AnecdoteForm />
+      <AnecdoteForm addAnecdote={addAnecdote} />
 
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
