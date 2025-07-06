@@ -8,22 +8,22 @@
     {
       "content": "Adding manpower to a late software project makes it later!",
       "id": "21149",
-      "votes": 0
+      "votes": 1
     },
     {
       "content": "The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
       "id": "69581",
-      "votes": 0
+      "votes": 1
     },
     {
       "content": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
       "id": "36975",
-      "votes": 0
+      "votes": 11
     },
     {
       "content": "Premature optimization is the root of all evil.",
       "id": "25170",
-      "votes": 0
+      "votes": 1
     },
     {
       "content": "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
@@ -33,7 +33,7 @@
     {
       "id": "739f",
       "content": "There is nothing quite so useless as doing with great efficiency something that should not be done at all.",
-      "votes": 0
+      "votes": 1
     },
     {
       "id": "32e0",
@@ -53,12 +53,17 @@
     {
       "id": "0908",
       "content": "Writing code is like writing a book, except if you miss out a single comma on page 126 the whole thing makes no sense.",
-      "votes": 0
+      "votes": 9
     },
     {
       "id": "15f5",
       "content": "Software development is like building a bridge, except the river is constantly moving, the banks keep shifting, and every morning the users drive trucks twice as heavy as what you designed for.",
       "votes": 0
+    },
+    {
+      "id": "6f49",
+      "content": "Computers are like air conditioners: they stop working properly if you open Windows.",
+      "votes": 6
     }
   ]
 }
