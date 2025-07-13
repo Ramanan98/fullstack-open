@@ -10,6 +10,7 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
+import User from './components/User'
 import { Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
@@ -106,6 +107,7 @@ const App = () => {
 
       <Routes>
         <Route path="/users" element={<Users />} />
+        <Route path="/users/:userId" element={<User />} />
         <Route path="/" element={
           <div>
             {!user && loginForm()}
