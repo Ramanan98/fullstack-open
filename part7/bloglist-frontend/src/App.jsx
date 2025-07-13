@@ -11,6 +11,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
+import NavigationMenu from './components/NavigationMenu'
 import { Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
@@ -100,9 +101,7 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      <div>
-        <Link to="/">home</Link> <Link to="/users">users</Link>
-      </div>
+      <NavigationMenu onLogout={handleLogout} />
       <Notification />
 
       <Routes>
