@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
+import { useDispatch } from 'react-redux'
+import { likeBlog, deleteBlog } from '../blogsReducer'
 
-const Blog = ({ blog, auth, onDelete }) => {
+const Blog = ({ blog, auth }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,23 +12,15 @@ const Blog = ({ blog, auth, onDelete }) => {
   }
 
   const [visible, setVisible] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
 
-  const addLike = async () => {
-    const updatedBlog = await blogService.update(blog.id, {
-      likes: likes + 1,
-    })
-    setLikes(updatedBlog.likes)
+  const dispatch = useDispatch()
+  const addLike = () => {
+    dispatch(likeBlog(blog.id, { ...blog, likes: blog.likes + 1 }))
   }
 
-  const removeBlog = async () => {
+  const removeBlog = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      try {
-        await blogService.deleteBlog(blog.id)
-        onDelete(blog.id)
-      } catch (error) {
-        console.error(error)
-      }
+      dispatch(deleteBlog(blog.id))
     }
   }
 
@@ -45,7 +38,7 @@ const Blog = ({ blog, auth, onDelete }) => {
         <div>
           <div className="url">{blog.url}</div>
           <div className="likes">
-            likes {likes}
+            likes {blog.likes}
             <button onClick={addLike}>Like</button>
           </div>
           {blog.user && <div>{blog.user.username}</div>}

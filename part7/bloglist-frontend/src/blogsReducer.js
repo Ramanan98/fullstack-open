@@ -10,13 +10,23 @@ const blogsReducer = createSlice({
       return action.payload
     },
     appendBlog(state, action) {
-      console.log(`${JSON.stringify(action.payload)} appended`)
       state.push(action.payload)
+      console.log(`${JSON.stringify(action.payload)} appended`)
+    },
+    updateBlog(state, action) {
+      const updated = action.payload
+      console.log(`${JSON.stringify(action.payload)} updated`)
+      return state.map(blog => (blog.id !== updated.id ? blog : updated))
+    },
+    removeBlog(state, action) {
+      const id = action.payload
+      console.log(`${JSON.stringify(action.payload)} removed`)
+      return state.filter(blog => blog.id !== id)
     },
   },
 })
 
-export const { setBlogs, appendBlog } = blogsReducer.actions
+export const { setBlogs, appendBlog, updateBlog, removeBlog } = blogsReducer.actions
 
 export const initializeBlogs = () => async dispatch => {
   const blogs = await blogService.getAll()
@@ -26,6 +36,16 @@ export const initializeBlogs = () => async dispatch => {
 export const createBlog = blogObject => async dispatch => {
   const newBlog = await blogService.create(blogObject)
   dispatch(appendBlog(newBlog))
+}
+
+export const likeBlog = (id, blogObject) => async dispatch => {
+  const updatedBlog = await blogService.update(id, blogObject)
+  dispatch(updateBlog(updatedBlog))
+}
+
+export const deleteBlog = id => async dispatch => {
+  await blogService.deleteBlog(id)
+  dispatch(removeBlog(id))
 }
 
 export default blogsReducer.reducer

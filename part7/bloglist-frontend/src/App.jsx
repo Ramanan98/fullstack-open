@@ -69,8 +69,6 @@ const App = () => {
     setUser(null)
   }
 
-  const handleDeleteBlog = id => {}
-
   const loginForm = () => (
     <form onSubmit={handleLogin} data-testid="loginForm">
       <div>
@@ -119,12 +117,7 @@ const App = () => {
           {[...blogs]
             .sort((a, b) => b.likes - a.likes)
             .map(blog => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                auth={user.username === blog.user?.username}
-                onDelete={handleDeleteBlog}
-              />
+              <Blog key={blog.id} blog={blog} auth={user.username === blog.user?.username} />
             ))}
         </>
       )}
