@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
+import { useSelector } from 'react-redux'
+import { initializeBlogs, createBlog } from './blogsReducer'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -10,7 +12,7 @@ import { useDispatch } from 'react-redux'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector(state => state.blogs)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -29,25 +31,16 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs => {
-      setBlogs(blogs)
-    })
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   const addBlog = blogObject => {
     blogFormRef.current.toggleVisibility()
-
-    blogService.create(blogObject).then(returnedBlog => {
-      const blogWithUser = {
-        ...returnedBlog,
-        user: user,
-      }
-      setBlogs(blogs.concat(blogWithUser))
-      dispatch(setNotification(`${blogObject.title} by ${blogObject.author} added`))
-      setTimeout(() => {
-        dispatch(clearNotification())
-      }, 5000)
-    })
+    dispatch(createBlog(blogObject))
+    dispatch(setNotification(`${blogObject.title} by ${blogObject.author} added`))
+    setTimeout(() => {
+      dispatch(clearNotification())
+    }, 5000)
   }
 
   const handleLogin = async event => {
@@ -76,9 +69,7 @@ const App = () => {
     setUser(null)
   }
 
-  const handleDeleteBlog = id => {
-    setBlogs(blogs.filter(blog => blog.id !== id))
-  }
+  const handleDeleteBlog = id => {}
 
   const loginForm = () => (
     <form onSubmit={handleLogin} data-testid="loginForm">
