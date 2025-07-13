@@ -5,10 +5,13 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import { setNotification, clearNotification } from './notificationReducer'
+import { useDispatch } from 'react-redux'
 
 const App = () => {
+  const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
-  const [notifyMessage, setNotifyMessage] = useState(null)
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -40,9 +43,9 @@ const App = () => {
         user: user,
       }
       setBlogs(blogs.concat(blogWithUser))
-      setNotifyMessage(`${blogObject.title} by ${blogObject.author} added`)
+      dispatch(setNotification(`${blogObject.title} by ${blogObject.author} added`))
       setTimeout(() => {
-        setNotifyMessage(null)
+        dispatch(clearNotification())
       }, 5000)
     })
   }
@@ -61,9 +64,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setNotifyMessage('wrong credentials')
+      dispatch(setNotification('wrong credentials'))
       setTimeout(() => {
-        setNotifyMessage(null)
+        dispatch(clearNotification())
       }, 5000)
     }
   }
@@ -106,7 +109,7 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={notifyMessage} />
+      <Notification />
 
       {!user && loginForm()}
 
