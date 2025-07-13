@@ -6,12 +6,13 @@ const blogSchema = mongoose.Schema({
   url: String,
   likes: {
     type: Number,
-    default: 0
+    default: 0,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
+  comments: [String],
 })
 
 blogSchema.set('toJSON', {
