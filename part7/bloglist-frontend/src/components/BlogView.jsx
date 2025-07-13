@@ -15,6 +15,7 @@ const BlogView = () => {
     dispatch(likeBlog(blog.id, { ...blog, likes: blog.likes + 1 }))
   }
 
+  // users can add comments to blog posts
   const handleComment = event => {
     event.preventDefault()
     // Don't do anything if no comment added
