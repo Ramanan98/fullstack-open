@@ -5,7 +5,7 @@ import { initializeBlogs, createBlog } from './reducers/blogsReducer'
 import { setNotification, clearNotification } from './reducers/notificationReducer'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import Blog from './components/Blog'
+import BlogView from './components/BlogView'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -108,29 +108,35 @@ const App = () => {
       <Routes>
         <Route path="/users" element={<Users />} />
         <Route path="/users/:userId" element={<User />} />
-        <Route path="/" element={
-          <div>
-            {!user && loginForm()}
-            {user && (
-              <div>
-                <p>{user.username} logged in</p>
-                <button onClick={handleLogout}>Log out</button>
-                <Togglable buttonLabel="New blog" ref={blogFormRef}>
-                  <BlogForm createBlog={addBlog} />
-                </Togglable>
-              </div>
-            )}
-            {user && (
-              <>
-                {[...blogs]
-                  .sort((a, b) => b.likes - a.likes)
-                  .map(blog => (
-                    <Blog key={blog.id} blog={blog} auth={user.username === blog.user?.username} />
-                  ))}
-              </>
-            )}
-          </div>
-        } />
+        <Route path="/blogs/:blogId" element={<BlogView />} />
+        <Route
+          path="/"
+          element={
+            <div>
+              {!user && loginForm()}
+              {user && (
+                <div>
+                  <p>{user.username} logged in</p>
+                  <button onClick={handleLogout}>Log out</button>
+                  <Togglable buttonLabel="New blog" ref={blogFormRef}>
+                    <BlogForm createBlog={addBlog} />
+                  </Togglable>
+                </div>
+              )}
+              {user && (
+                <>
+                  {[...blogs]
+                    .sort((a, b) => b.likes - a.likes)
+                    .map(blog => (
+                      <div key={blog.id}>
+                        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                      </div>
+                    ))}
+                </>
+              )}
+            </div>
+          }
+        />
       </Routes>
     </div>
   )
