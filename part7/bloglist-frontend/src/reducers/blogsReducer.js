@@ -1,26 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit'
-import blogService from './services/blogs'
+import blogService from '../services/blogs'
 
 const blogsReducer = createSlice({
   name: 'blogs',
   initialState: [],
   reducers: {
     setBlogs(state, action) {
-      console.log(`${JSON.stringify(action.payload)} added`)
       return action.payload
     },
     appendBlog(state, action) {
       state.push(action.payload)
-      console.log(`${JSON.stringify(action.payload)} appended`)
     },
     updateBlog(state, action) {
       const updated = action.payload
-      console.log(`${JSON.stringify(action.payload)} updated`)
       return state.map(blog => (blog.id !== updated.id ? blog : updated))
     },
     removeBlog(state, action) {
       const id = action.payload
-      console.log(`${JSON.stringify(action.payload)} removed`)
       return state.filter(blog => blog.id !== id)
     },
   },

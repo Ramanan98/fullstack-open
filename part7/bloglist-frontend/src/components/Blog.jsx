@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { likeBlog, deleteBlog } from '../blogsReducer'
+import { likeBlog, deleteBlog } from '../reducers/blogsReducer'
 
 const Blog = ({ blog, auth }) => {
   const blogStyle = {

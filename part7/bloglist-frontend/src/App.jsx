@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
-import { initializeBlogs, createBlog } from './blogsReducer'
+import { useSelector, useDispatch } from 'react-redux'
+import { setUser, logoutUser } from './reducers/userReducer'
+import { initializeBlogs, createBlog } from './reducers/blogsReducer'
+import { setNotification, clearNotification } from './reducers/notificationReducer'
+import blogService from './services/blogs'
+import loginService from './services/login'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
-import loginService from './services/login'
-import { setNotification, clearNotification } from './notificationReducer'
-import { useDispatch } from 'react-redux'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -16,19 +16,18 @@ const App = () => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
 
+  const user = useSelector(state => state.user)
   useEffect(() => {
-    // Using local storage
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -53,7 +52,7 @@ const App = () => {
       })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      dispatch(setUser(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -66,7 +65,7 @@ const App = () => {
 
   const handleLogout = event => {
     window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
+    dispatch(logoutUser())
   }
 
   const loginForm = () => (
