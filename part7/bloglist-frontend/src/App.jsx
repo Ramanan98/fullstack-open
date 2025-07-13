@@ -9,6 +9,8 @@ import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import Users from './components/Users'
+import { Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -97,29 +99,37 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
+      <div>
+        <Link to="/">home</Link> <Link to="/users">users</Link>
+      </div>
       <Notification />
 
-      {!user && loginForm()}
-
-      {user && (
-        <div>
-          <p>{user.username} logged in</p>
-          <button onClick={handleLogout}>Log out</button>
-          <Togglable buttonLabel="New blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
-        </div>
-      )}
-
-      {user && (
-        <>
-          {[...blogs]
-            .sort((a, b) => b.likes - a.likes)
-            .map(blog => (
-              <Blog key={blog.id} blog={blog} auth={user.username === blog.user?.username} />
-            ))}
-        </>
-      )}
+      <Routes>
+        <Route path="/users" element={<Users />} />
+        <Route path="/" element={
+          <div>
+            {!user && loginForm()}
+            {user && (
+              <div>
+                <p>{user.username} logged in</p>
+                <button onClick={handleLogout}>Log out</button>
+                <Togglable buttonLabel="New blog" ref={blogFormRef}>
+                  <BlogForm createBlog={addBlog} />
+                </Togglable>
+              </div>
+            )}
+            {user && (
+              <>
+                {[...blogs]
+                  .sort((a, b) => b.likes - a.likes)
+                  .map(blog => (
+                    <Blog key={blog.id} blog={blog} auth={user.username === blog.user?.username} />
+                  ))}
+              </>
+            )}
+          </div>
+        } />
+      </Routes>
     </div>
   )
 }
