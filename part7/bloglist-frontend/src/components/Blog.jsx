@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { likeBlog, deleteBlog } from '../reducers/blogsReducer'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog, auth }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
+
 
   const [visible, setVisible] = useState(false)
 
@@ -28,24 +27,32 @@ const Blog = ({ blog, auth }) => {
     setVisible(!visible)
   }
 
+  const userAdded = auth;
   return (
-    <div style={blogStyle}>
-      <div className="titleAuthor">
-        {blog.title} by {blog.author}
-        <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
-      </div>
-      {visible && (
-        <div>
-          <div className="url">{blog.url}</div>
-          <div className="likes">
-            likes {blog.likes}
-            <button onClick={addLike}>Like</button>
-          </div>
-          {blog.user && <div>{blog.user.username}</div>}
-          {auth && <button onClick={removeBlog}>Remove</button>}
-        </div>
-      )}
-    </div>
+    <Card sx={{ mb: 2, p: 1 }}>
+      <CardContent>
+        <Typography
+          variant="h6"
+          sx={{ display: 'inline', cursor: 'pointer', textDecoration: 'underline' }}
+          component={Link}
+          to={`/blogs/${blog.id}`}
+        >
+          {blog.title}
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          sx={{ display: 'inline', ml: 1, cursor: 'pointer', textDecoration: 'underline' }}
+          color="text.secondary"
+          component={Link}
+          to={`/blogs/${blog.id}`}
+        >
+          by {blog.author}
+        </Typography>
+        {userAdded && (
+          <Button onClick={removeBlog} color="error" size="small" variant="contained" sx={{ ml: 2 }}>delete</Button>
+        )}
+      </CardContent>
+    </Card>
   )
 }
 

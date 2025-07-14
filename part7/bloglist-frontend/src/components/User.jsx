@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import usersService from '../services/users'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
 
 const User = () => {
   const { userId } = useParams()
@@ -17,15 +21,15 @@ const User = () => {
   }
 
   return (
-    <div>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
+    <Paper sx={{ p: 3, mt: 3 }}>
+      <Typography variant="h5" sx={{ mb: 2 }}>{user.name}</Typography>
+      <Typography variant="h6" sx={{ mb: 1 }}>Added blogs</Typography>
+      <List>
         {user.blogs.map(blog => (
-          <li key={blog.id}>{blog.title}</li>
+          <ListItem key={blog.id} sx={{ pl: 0 }}>{blog.title}</ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Paper>
   )
 }
 

@@ -2,6 +2,13 @@ import { useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { likeBlog, addComment } from '../reducers/blogsReducer'
 import { useState } from 'react'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
 
 const BlogView = () => {
   const { blogId } = useParams()
@@ -11,7 +18,8 @@ const BlogView = () => {
 
   if (!blog) return null
 
-  const addLike = () => {
+  const addLike = (e) => {
+    if (e) e.preventDefault();
     dispatch(likeBlog(blog.id, { ...blog, likes: blog.likes + 1 }))
   }
 
@@ -25,25 +33,38 @@ const BlogView = () => {
   }
 
   return (
-    <div>
-      <h2>{blog.title}</h2>
-      <a href={blog.url}>{blog.url}</a>
-      <div>
-        {blog.likes} likes
-        <button onClick={addLike}>like</button>
-      </div>
-      <div>added by {blog.user && blog.user.name}</div>
-      <h2>comments</h2>
-      <form onSubmit={handleComment}>
-        <input type="text" value={comment} onChange={event => setComment(event.target.value)} />
-        <button type="submit">add comment</button>
-      </form>
-      <ul>
-        {(blog.comments || []).map((c, i) => (
-          <li key={i}>{c}</li>
-        ))}
-      </ul>
-    </div>
+    <Card sx={{ mt: 2 }}>
+      <CardContent>
+        <Typography variant="h5" component="div">{blog.title}</Typography>
+        <Typography variant="body2" color="text.secondary">
+          <a href={blog.url}>{blog.url}</a>
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 1 }}>
+          {blog.likes} likes
+          <Button onClick={e => addLike(e)} size="small" sx={{ ml: 1 }} variant="outlined">like</Button>
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          added by {blog.user && blog.user.name}
+        </Typography>
+        <Typography variant="h6" sx={{ mt: 2 }}>comments</Typography>
+        <form onSubmit={handleComment} style={{ marginBottom: 8 }}>
+          <TextField
+            size="small"
+            value={comment}
+            onChange={event => setComment(event.target.value)}
+            variant="outlined"
+            placeholder="Add a comment"
+            sx={{ mr: 1 }}
+          />
+          <Button type="submit" variant="contained" size="small">add comment</Button>
+        </form>
+        <List>
+          {(blog.comments || []).map((c, i) => (
+            <ListItem key={i} sx={{ pl: 0 }}>{c}</ListItem>
+          ))}
+        </List>
+      </CardContent>
+    </Card>
   )
 }
 

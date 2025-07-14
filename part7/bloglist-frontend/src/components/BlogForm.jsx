@@ -1,4 +1,8 @@
 import { useState } from 'react'
+import Paper from '@mui/material/Paper'
+import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
 
 const BlogForm = ({ createBlog }) => {
   const [newBlog, setNewBlog] = useState({
@@ -26,43 +30,42 @@ const BlogForm = ({ createBlog }) => {
   }
 
   return (
-    <div>
-      <h2>Create a new blog</h2>
-
+    <Paper sx={{ p: 2, mb: 2 }}>
+      <Typography variant="h6" sx={{ mb: 1 }}>Create a new blog</Typography>
       <form onSubmit={addBlog}>
-        <div>
-          title:
-          <input
-            name="title"
-            value={newBlog.title}
-            onChange={handleBlogChange}
-            placeholder="enter title"
-            data-testid="title"
-          />
-        </div>
-        <div>
-          author:
-          <input
-            name="author"
-            value={newBlog.author}
-            onChange={handleBlogChange}
-            placeholder="enter author"
-            data-testid="author"
-          />
-        </div>
-        <div>
-          url:
-          <input
-            name="url"
-            value={newBlog.url}
-            onChange={handleBlogChange}
-            placeholder="enter url"
-            data-testid="url"
-          />
-        </div>
-        <button type="submit">Create</button>
+        <TextField
+          label="Title"
+          name="title"
+          value={newBlog.title}
+          onChange={handleBlogChange}
+          placeholder="enter title"
+          data-testid="title"
+          fullWidth
+          sx={{ mb: 1 }}
+        />
+        <TextField
+          label="Author"
+          name="author"
+          value={newBlog.author}
+          onChange={handleBlogChange}
+          placeholder="enter author"
+          data-testid="author"
+          fullWidth
+          sx={{ mb: 1 }}
+        />
+        <TextField
+          label="URL"
+          name="url"
+          value={newBlog.url}
+          onChange={handleBlogChange}
+          placeholder="enter url"
+          data-testid="url"
+          fullWidth
+          sx={{ mb: 2 }}
+        />
+        <Button type="submit" variant="contained">Create</Button>
       </form>
-    </div>
+    </Paper>
   )
 }
 

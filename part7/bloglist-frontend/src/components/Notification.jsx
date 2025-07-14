@@ -1,9 +1,16 @@
+import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
 import { useSelector } from 'react-redux'
 
 const Notification = () => {
   const message = useSelector(state => state.notification)
-  if (message === null) return null
-  return <div className="error">{message}</div>
+  if (!message) return null
+  return (
+    <Box sx={{ my: 2 }}>
+      <Alert severity="info" variant="filled">{message}</Alert>
+    </Box>
+  )
 }
+
 
 export default Notification
