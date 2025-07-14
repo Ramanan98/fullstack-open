@@ -21,8 +21,6 @@ import { Routes, Route } from 'react-router-dom'
 import { Box } from '@mui/material'
 import { Button } from '@mui/material'
 import { TextField } from '@mui/material'
-import { List } from '@mui/material'
-import { ListItem } from '@mui/material'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -171,8 +169,7 @@ const App = () => {
           path="/"
           element={
             user
-              ? // Redirect to /blogs if logged in
-                window.location.pathname !== '/blogs'
+              ? window.location.pathname !== '/blogs'
                 ? (window.location.replace('/blogs'), null)
                 : null
               : loginForm()
