@@ -6,7 +6,7 @@ const Books = () => {
   const [selectedGenre, setSelectedGenre] = useState(null);
   const [genres, setGenres] = useState([]);
 
-  const { loading, error, data } = useQuery(ALL_BOOKS, {
+  const { loading, error, data, refetch } = useQuery(ALL_BOOKS, {
     variables: { genre: selectedGenre || undefined },
   });
 
