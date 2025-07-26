@@ -224,8 +224,9 @@ const resolvers = {
     },
   },
   Author: {
-    bookCount: (root) => {
-      return Book.countDocuments({ author: root._id });
+    bookCount: async (root) => {
+      const count = await Book.countDocuments({ author: root._id });
+      return count;
     },
   },
 };

@@ -22,9 +22,9 @@ const Books = () => {
         </thead>
         <tbody>
           {books.map((book) => (
-            <tr key={`${book.title}-${book.author}`}>
+            <tr key={`${book.title}-${book.author?.name || 'unknown'}`}>
               <td>{book.title}</td>
-              <td>{book.author}</td>
+              <td>{book.author?.name || 'Unknown'}</td>
               <td>{book.published}</td>
             </tr>
           ))}
