@@ -1,15 +1,28 @@
 import { useQuery, useMutation } from "@apollo/client";
 import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Select from "react-select";
 
 const Authors = () => {
-  const [name, setName] = useState("");
+  const [selectedAuthor, setSelectedAuthor] = useState(null);
   const [born, setBorn] = useState("");
+  const [authorOptions, setAuthorOptions] = useState([]);
 
   const { loading, error, data } = useQuery(ALL_AUTHORS);
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   });
+
+  useEffect(() => {
+    if (data?.allAuthors) {
+      const options = data.allAuthors.map((author) => ({
+        value: author.name,
+        label: author.name,
+        born: author.born,
+      }));
+      setAuthorOptions(options);
+    }
+  }, [data]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -19,17 +32,20 @@ const Authors = () => {
   const submit = async (event) => {
     event.preventDefault();
 
-    if (!name || !born) {
-      alert("Please fill in all fields");
+    if (!selectedAuthor || !born) {
+      alert("Please select an author and enter a birth year");
       return;
     }
 
     try {
       await editAuthor({
-        variables: { name, setBornTo: parseInt(born) },
+        variables: {
+          name: selectedAuthor.value,
+          setBornTo: parseInt(born),
+        },
       });
 
-      setName("");
+      setSelectedAuthor(null);
       setBorn("");
     } catch (error) {
       console.error("Error updating author:", error);
@@ -62,12 +78,15 @@ const Authors = () => {
       <form onSubmit={submit}>
         <div>
           <label>
-            name
-            <input
-              type="text"
-              value={name}
-              onChange={({ target }) => setName(target.value)}
-              required
+            author
+            <Select
+              value={selectedAuthor}
+              onChange={setSelectedAuthor}
+              options={authorOptions}
+              isClearable
+              isSearchable
+              className="react-select-container"
+              classNamePrefix="react-select"
             />
           </label>
         </div>
