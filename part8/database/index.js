@@ -57,8 +57,23 @@ const resolvers = {
   Query: {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
-    allBooks: async () => {
-      return Book.find({}).populate("author");
+    allBooks: async (_, args) => {
+      let query = {};
+
+      if (args.author) {
+        const author = await Author.findOne({ name: args.author });
+        if (author) {
+          query.author = author._id;
+        } else {
+          return [];
+        }
+      }
+
+      if (args.genre) {
+        query.genres = args.genre;
+      }
+
+      return Book.find(query).populate("author");
     },
     allAuthors: async () => {
       return Author.find({});
@@ -76,8 +91,10 @@ const resolvers = {
       }
 
       const book = new Book({
-        ...args,
+        title: args.title,
+        published: args.published,
         author: author._id,
+        genres: args.genres,
       });
 
       await book.save();
@@ -93,7 +110,7 @@ const resolvers = {
     },
   },
   Author: {
-    bookCount: async (root) => {
+    bookCount: (root) => {
       return Book.countDocuments({ author: root._id });
     },
   },
