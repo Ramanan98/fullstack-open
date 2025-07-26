@@ -13,11 +13,15 @@ const App = () => {
         <Link to="/books">
           <button>books</button>
         </Link>
+        <Link to="/add">
+          <button>add book</button>
+        </Link>
       </div>
 
       <Routes>
         <Route path="/" element={<Authors />} />
         <Route path="/books" element={<Books />} />
+        <Route path="/add" element={<NewBook />} />
       </Routes>
     </div>
   );
