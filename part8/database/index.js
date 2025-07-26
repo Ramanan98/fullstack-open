@@ -1,5 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
+const { GraphQLError } = require("graphql");
 const mongoose = require("mongoose");
 const Book = require("./models/book");
 const Author = require("./models/author");
@@ -8,6 +9,22 @@ mongoose.set("strictQuery", false);
 require("dotenv").config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
+
+const getValidationError = (error) => {
+  if (error.name === "ValidationError") {
+    const messages = Object.values(error.errors)
+      .map((e) => e.message)
+      .join("; ");
+    throw new GraphQLError("Validation error: " + messages, {
+      extensions: {
+        code: "BAD_USER_INPUT",
+        invalidArgs: error.path,
+        error,
+      },
+    });
+  }
+  throw error;
+};
 
 mongoose
   .connect(MONGODB_URI)
@@ -81,32 +98,47 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (_, args) => {
-      let author = await Author.findOne({ name: args.author });
+      try {
+        let author = await Author.findOne({ name: args.author });
 
-      if (!author) {
-        author = new Author({
-          name: args.author,
+        if (!author) {
+          author = new Author({
+            name: args.author,
+          });
+          await author.save().catch(getValidationError);
+        }
+
+        const book = new Book({
+          title: args.title,
+          published: args.published,
+          author: author._id,
+          genres: args.genres,
         });
-        await author.save();
+
+        await book.save().catch(getValidationError);
+        return book.populate("author");
+      } catch (error) {
+        getValidationError(error);
       }
-
-      const book = new Book({
-        title: args.title,
-        published: args.published,
-        author: author._id,
-        genres: args.genres,
-      });
-
-      await book.save();
-      return book.populate("author");
     },
     editAuthor: async (_, args) => {
-      const author = await Author.findOne({ name: args.name });
-      if (!author) return null;
+      try {
+        const author = await Author.findOne({ name: args.name });
+        if (!author) {
+          throw new GraphQLError("Author not found", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: args.name,
+            },
+          });
+        }
 
-      author.born = args.setBornTo;
-      await author.save();
-      return author;
+        author.born = args.setBornTo;
+        await author.save().catch(getValidationError);
+        return author;
+      } catch (error) {
+        getValidationError(error);
+      }
     },
   },
   Author: {
