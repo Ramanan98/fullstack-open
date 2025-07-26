@@ -1,18 +1,40 @@
-import { useQuery } from "@apollo/client";
-import { ALL_AUTHORS } from "../queries";
-import PropTypes from "prop-types";
+import { useQuery, useMutation } from "@apollo/client";
+import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries";
+import { useState } from "react";
 
-const Authors = ({ show = true }) => {
+const Authors = () => {
+  const [name, setName] = useState("");
+  const [born, setBorn] = useState("");
+
   const { loading, error, data } = useQuery(ALL_AUTHORS);
-
-  if (!show) {
-    return null;
-  }
+  const [editAuthor] = useMutation(EDIT_AUTHOR, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
+  });
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   const authors = data?.allAuthors || [];
+
+  const submit = async (event) => {
+    event.preventDefault();
+
+    if (!name || !born) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    try {
+      await editAuthor({
+        variables: { name, setBornTo: parseInt(born) },
+      });
+
+      setName("");
+      setBorn("");
+    } catch (error) {
+      console.error("Error updating author:", error);
+    }
+  };
 
   return (
     <div>
@@ -35,11 +57,35 @@ const Authors = ({ show = true }) => {
           ))}
         </tbody>
       </table>
+
+      <h2>set birthyear</h2>
+      <form onSubmit={submit}>
+        <div>
+          <label>
+            name
+            <input
+              type="text"
+              value={name}
+              onChange={({ target }) => setName(target.value)}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            born
+            <input
+              type="number"
+              value={born}
+              onChange={({ target }) => setBorn(target.value)}
+              required
+            />
+          </label>
+        </div>
+        <button type="submit">update author</button>
+      </form>
     </div>
   );
-};
-Authors.propTypes = {
-  show: PropTypes.bool,
 };
 
 export default Authors;
