@@ -4,7 +4,8 @@ import { ALL_BOOKS, ME } from "../queries";
 const Recommendations = () => {
   const userResult = useQuery(ME);
   const favoriteGenre = userResult.data?.me?.favoriteGenre;
-  
+
+  // GraphQL for querying
   const { loading, error, data } = useQuery(ALL_BOOKS, {
     variables: { genre: favoriteGenre },
     skip: !favoriteGenre,
@@ -20,8 +21,10 @@ const Recommendations = () => {
   return (
     <div>
       <h1>recommendations</h1>
-      <p>books in your favorite genre <strong>{favoriteGenre}</strong></p>
-      
+      <p>
+        books in your favorite genre <strong>{favoriteGenre}</strong>
+      </p>
+
       <table>
         <thead>
           <tr>
