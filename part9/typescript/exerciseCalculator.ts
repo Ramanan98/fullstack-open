@@ -43,7 +43,7 @@ export const calculateExercises = (
 
   if (average < target * 0.5) {
     rating = 1;
-    ratingDescription = "you might try harder...";
+    ratingDescription = "bad";
   } else if (average < target) {
     rating = 2;
     ratingDescription = "not too bad but could be better";
