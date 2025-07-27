@@ -63,15 +63,13 @@ export const calculateExercises = (
   };
 };
 
-// try {
-//   const { dailyHours, target } = parseArguments(process.argv);
-//   console.log(calculateExercises(dailyHours, target));
-// } catch (error: unknown) {
-//   let errorMessage = "Something bad happened.";
-//   if (error instanceof Error) {
-//     errorMessage += " Error: " + error.message;
-//   }
-//   console.log(errorMessage);
-// }
-
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { dailyHours, target } = parseArguments(process.argv);
+  console.log(calculateExercises(dailyHours, target));
+} catch (error: unknown) {
+  let errorMessage = "Something bad happened.";
+  if (error instanceof Error) {
+    errorMessage += " Error: " + error.message;
+  }
+  console.log(errorMessage);
+}
