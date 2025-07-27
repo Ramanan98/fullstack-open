@@ -10,6 +10,7 @@ const App = () => {
     visibility: "",
     comment: "",
   });
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchDiaries = async () => {
@@ -25,8 +26,13 @@ const App = () => {
       const addedEntry = await createDiary(newEntry);
       setDiaries(diaries.concat(addedEntry));
       setNewEntry({ date: "", weather: "", visibility: "", comment: "" });
+      setError(null);
     } catch (error) {
-      console.error("Error adding diary entry:", error);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     }
   };
 
@@ -42,6 +48,7 @@ const App = () => {
   return (
     <div>
       <h1>Add new entry</h1>
+      {error && <div style={{ color: "red" }}>{error}</div>}
       <form onSubmit={handleSubmit}>
         <div>
           date:
