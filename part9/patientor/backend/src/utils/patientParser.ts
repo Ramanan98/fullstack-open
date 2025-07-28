@@ -1,6 +1,6 @@
 import { NewPatient } from "../types";
-import { NewPatientSchema } from "../types";
+import { NewPatientSchemaWithEntries } from "../types";
 
 export const toNewPatient = (object: unknown): NewPatient => {
-  return NewPatientSchema.parse(object);
+  return NewPatientSchemaWithEntries.parse(object);
 };
