@@ -6,7 +6,7 @@ import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 
 import patientService from "../../services/patients";
-import { Patient } from "../../types";
+import { Patient, Entry } from "../../types";
 
 const PatientDetailsPage = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -37,9 +37,25 @@ const PatientDetailsPage = () => {
     }
   };
 
+  const EntryDetails = ({ entry }: { entry: Entry }) => (
+    <li style={{ marginBottom: "1rem" }}>
+      <strong>{entry.date}</strong>: {entry.description}
+      {entry.diagnosisCodes && entry.diagnosisCodes.length > 0 && (
+        <div>
+          <span style={{ fontWeight: "bold" }}>Diagnosis codes:</span>
+          <ul style={{ margin: "0.25rem 0 0 1.5rem" }}>
+            {entry.diagnosisCodes.map((code, index) => (
+              <li key={index}>{code}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </li>
+  );
+
   return (
-    <div>
-      <Box sx={{ mt: 4 }}>
+    <Box sx={{ p: 3 }}>
+      <Box sx={{ mb: 4 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
           <Typography variant="h4" component="h2">
             {patient.name}
@@ -47,11 +63,26 @@ const PatientDetailsPage = () => {
           {getGenderIcon()}
         </Box>
 
-        <Typography>ssn: {patient.ssn}</Typography>
-        <Typography>occupation: {patient.occupation}</Typography>
-        <Typography>date of birth: {patient.dateOfBirth}</Typography>
+        <Box sx={{ mb: 3 }}>
+          <Typography>SSN: {patient.ssn}</Typography>
+          <Typography>Occupation: {patient.occupation}</Typography>
+          <Typography>Date of Birth: {patient.dateOfBirth}</Typography>
+        </Box>
       </Box>
-    </div>
+
+      <div style={{ marginTop: "2rem" }}>
+        <h3>Entries</h3>
+        {patient.entries.length > 0 ? (
+          <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {patient.entries.map((entry) => (
+              <EntryDetails key={entry.id} entry={entry} />
+            ))}
+          </ul>
+        ) : (
+          <p>No entries found for this patient.</p>
+        )}
+      </div>
+    </Box>
   );
 };
 
